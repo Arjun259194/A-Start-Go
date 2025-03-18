@@ -31,7 +31,7 @@ func (this Spot) draw(screen *ebiten.Image, clr color.Color) {
 	i, j := this.index.Get()
 	x, y := float32(i*SIZE), float32(j*SIZE)
 	size := float32(SIZE)
-	vector.DrawFilledRect(screen, x, y, size, size, clr, false)
+	vector.DrawFilledRect(screen, x, y, size, size, clr, true)
 }
 
 func (this Spot) heuristic(spot Spot) float32 {

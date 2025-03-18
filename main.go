@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"image/color"
 	"log"
+	"math/rand"
 
 	"github.com/Arjun259194/a-star/ds"
 	"github.com/hajimehoshi/ebiten/v2"
@@ -81,6 +82,13 @@ func (this *Game) Update() error {
 func (this Game) Draw(screen *ebiten.Image) {
 	this.grid.Render(screen)
 
+	this.end.draw(screen, color.RGBA{R: 255})
+
+	for _, nidx := range this.end.getNeighbores() {
+		n := this.grid.GetSpot(nidx)
+		n.draw(screen, color.RGBA{R: 255, A: 0 })
+	}
+
 	temp := this.curr
 	for temp != nil {
 		temp.draw(screen, color.RGBA{B: 255})
@@ -96,13 +104,17 @@ func (this *Game) Layout(outsideWidth, outSideHeight int) (screenWidth, screenHe
 func main() {
 	grid := NewGrid(COLS, ROWS)
 
+	i, j := rand.Intn(COLS-1), rand.Intn(ROWS-1)
+
+	end := grid.GetSpotByIndex(i, j)
+
 	game := &Game{
 		grid:      grid,
 		pause:     false,
 		closedSet: ds.NewIdxMap[Spot](),
 		openSet:   ds.NewIdxMap[Spot](),
 		start:     grid.GetSpotByIndex(0, 0),
-		end:       grid.GetSpotByIndex(COLS-1, ROWS-1),
+		end:       end,
 		curr:      nil,
 	}
 
