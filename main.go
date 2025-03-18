@@ -7,20 +7,30 @@ import (
 	"math/rand"
 
 	"github.com/Arjun259194/a-star/ds"
+	"github.com/Arjun259194/a-star/game"
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
 type Game struct {
-	grid      Grid
+	grid      game.Grid
 	pause     bool
-	openSet   ds.IdxMap[Spot]
-	closedSet ds.IdxMap[Spot]
-	start     *Spot
-	end       *Spot
-	curr      *Spot
+	openSet   ds.IdxMap[*game.Spot]
+	closedSet ds.IdxMap[*game.Spot]
+	start     *game.Spot
+	end       *game.Spot
+	curr      *game.Spot
 }
 
 func (this *Game) Update() error {
+	if ebiten.IsKeyPressed(ebiten.KeyEnter) {
+		this.pause = false
+		return nil
+	}
+
+	if ebiten.IsKeyPressed(ebiten.KeyEscape) {
+		return ebiten.Termination
+	}
+
 	if this.pause {
 		return nil
 	}
@@ -34,7 +44,7 @@ func (this *Game) Update() error {
 	winnerIdx := 0
 	winnerSpot := this.openSet.Get(winnerIdx)
 	for i, spot := range this.openSet.Iter() {
-		if spot.f < winnerSpot.f {
+		if spot.F < winnerSpot.F {
 			winnerIdx = i
 			winnerSpot = spot
 		}
@@ -50,24 +60,24 @@ func (this *Game) Update() error {
 	this.openSet.Remove(this.curr)
 	this.closedSet.Add(this.curr)
 
-	neighboresIdxs := this.curr.getNeighbores()
+	neighboresIdxs := this.curr.GetNeighbores(COLS, ROWS)
 	for _, idx := range neighboresIdxs {
 		neighbore := this.grid.GetSpot(idx)
 
 		exists := this.closedSet.Has(neighbore)
-		if neighbore.wall || exists {
+		if neighbore.Wall || exists {
 			continue
 		}
 
-		tempG := this.curr.g + 1
+		tempG := this.curr.G + 1
 
 		isNewNode := !this.openSet.Has(neighbore)
 
-		if isNewNode || tempG < neighbore.g {
-			neighbore.g = tempG
-			neighbore.h = neighbore.heuristic(*this.end)
-			neighbore.f = neighbore.g + neighbore.h
-			neighbore.prev = this.curr
+		if isNewNode || tempG < neighbore.G {
+			neighbore.G = tempG
+			neighbore.H = neighbore.Heuristic(*this.end)
+			neighbore.F = neighbore.G + neighbore.H
+			neighbore.Prev = this.curr
 
 			if isNewNode {
 				this.openSet.Add(neighbore)
@@ -82,17 +92,12 @@ func (this *Game) Update() error {
 func (this Game) Draw(screen *ebiten.Image) {
 	this.grid.Render(screen)
 
-	this.end.draw(screen, color.RGBA{R: 255})
-
-	for _, nidx := range this.end.getNeighbores() {
-		n := this.grid.GetSpot(nidx)
-		n.draw(screen, color.RGBA{R: 255, A: 0 })
-	}
+	this.end.Draw(screen, color.RGBA{R: 255})
 
 	temp := this.curr
 	for temp != nil {
-		temp.draw(screen, color.RGBA{B: 255})
-		temp = temp.prev
+		temp.DrawPath(screen, color.RGBA{B: 255, G: 255})
+		temp = temp.Prev
 	}
 
 }
@@ -102,7 +107,7 @@ func (this *Game) Layout(outsideWidth, outSideHeight int) (screenWidth, screenHe
 }
 
 func main() {
-	grid := NewGrid(COLS, ROWS)
+	grid := game.NewGrid(COLS, ROWS, WALL_RATE, SIZE)
 
 	i, j := rand.Intn(COLS-1), rand.Intn(ROWS-1)
 
@@ -110,16 +115,16 @@ func main() {
 
 	game := &Game{
 		grid:      grid,
-		pause:     false,
-		closedSet: ds.NewIdxMap[Spot](),
-		openSet:   ds.NewIdxMap[Spot](),
+		pause:     true,
+		closedSet: ds.NewIdxMap[*game.Spot](),
+		openSet:   ds.NewIdxMap[*game.Spot](),
 		start:     grid.GetSpotByIndex(0, 0),
 		end:       end,
 		curr:      nil,
 	}
 
-	game.end.wall = false
-	game.start.wall = false
+	game.end.Wall = false
+	game.start.Wall = false
 
 	game.openSet.Add(game.start)
 

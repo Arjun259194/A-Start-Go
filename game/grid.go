@@ -1,27 +1,20 @@
-package main
+package game
 
 import (
 	"image/color"
+	"math/rand"
 
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
-type SpotIndex struct{ i, j int }
-
-func NewSpotIndex(i, j int) SpotIndex { return SpotIndex{i, j} }
-
-func (this SpotIndex) Get() (int, int) {
-	return this.i, this.j
-}
-
 type Grid [][]Spot
 
-func NewGrid(cols, rows int) Grid {
+func NewGrid(cols, rows int, wallRate float32, size int) Grid {
 	grid := make(Grid, cols)
 	for i := range grid {
 		grid[i] = make([]Spot, rows)
 		for j := range grid[i] {
-			grid[i][j] = newSpot(i, j)
+			grid[i][j] = NewSpot(i, j, rand.Float32() < wallRate, float32(size))
 		}
 	}
 	return grid
@@ -39,9 +32,9 @@ func (this Grid) GetSpot(index SpotIndex) *Spot {
 func (this Grid) Render(screen *ebiten.Image) {
 	for _, row := range this {
 		for _, spot := range row {
-			if spot.wall {
-				spot.draw(screen, color.White)
-			} 
+			if spot.Wall {
+				spot.Draw(screen, color.White)
+			}
 		}
 	}
 }

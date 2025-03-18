@@ -1,18 +1,18 @@
 package ds
 
 type IdxMap[T comparable] struct {
-	data []*T
-	set  map[*T]int
+	data []T
+	set  map[T]int
 }
 
 func NewIdxMap[T comparable]() IdxMap[T] {
 	return IdxMap[T]{
-		data: []*T{},
-		set:  make(map[*T]int),
+		data: []T{},
+		set:  make(map[T]int),
 	}
 }
 
-func (this *IdxMap[T]) Add(el *T) {
+func (this *IdxMap[T]) Add(el T) {
 	if _, exists := this.set[el]; exists {
 		return
 	}
@@ -21,16 +21,16 @@ func (this *IdxMap[T]) Add(el *T) {
 	this.data = append(this.data, el)
 }
 
-func (this IdxMap[T]) Has(el *T) bool {
+func (this IdxMap[T]) Has(el T) bool {
 	_, exists := this.set[el]
 	return exists
 }
 
-func (this IdxMap[T]) Get(i int) *T {
+func (this IdxMap[T]) Get(i int) T {
 	return this.data[i]
 }
 
-func (this *IdxMap[T]) Remove(el *T) {
+func (this *IdxMap[T]) Remove(el T) {
 	idx, exists := this.set[el]
 	if !exists {
 		return
@@ -46,7 +46,7 @@ func (this *IdxMap[T]) Remove(el *T) {
 	delete(this.set, el)
 }
 
-func (this *IdxMap[T]) Iter() []*T {
+func (this *IdxMap[T]) Iter() []T {
 	return this.data
 }
 
