@@ -58,7 +58,8 @@ func (this Spot) DrawPath(screen *ebiten.Image, clr color.Color) {
 	i1, j1 := this.Prev.index.GetFloat32()
 	x1, y1 := i1*size+size/2, j1*size+size/2
 
-	vector.StrokeLine(screen, x0, y0, x1, y1, 2, clr, false)
+	strokeWidth := size/2 - 1
+	vector.StrokeLine(screen, x0, y0, x1, y1, strokeWidth, clr, false)
 }
 
 func (this Spot) Heuristic(spot Spot) float32 {

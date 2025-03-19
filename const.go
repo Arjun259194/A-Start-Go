@@ -1,12 +1,11 @@
 package main
 
 const (
-	WIDTH     int     = 1000
+	WIDTH     int     = 1200
 	HEIGHT    int     = 600
-	FRAMRATE  int     = 120
-	SIZE      int     = 5
+	FRAMRATE  int     = 30
+	SIZE      int     = 10
 	COLS      int     = WIDTH / SIZE
 	ROWS      int     = HEIGHT / SIZE
-	WALL_RATE float32 = 0.4
-	PATH_W    float32 = 2
+	WALL_RATE float32 = 0.2
 )

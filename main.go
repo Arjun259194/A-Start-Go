@@ -27,6 +27,19 @@ func (this *Game) Update() error {
 		return nil
 	}
 
+	if ebiten.IsMouseButtonPressed(ebiten.MouseButtonLeft) {
+		x, y := ebiten.CursorPosition()
+		i, j := (x / SIZE), (y / SIZE)
+		newEnd := this.grid.GetSpotByIndex(i, j)
+		newEnd.Wall = false
+		this.end = newEnd
+		this.closedSet = ds.NewIdxMap[*game.Spot]()
+		this.openSet = ds.NewIdxMap[*game.Spot]()
+		this.openSet.Add(this.start)
+    this.pause = false
+		return nil
+	}
+
 	if ebiten.IsKeyPressed(ebiten.KeyEscape) {
 		return ebiten.Termination
 	}
@@ -96,7 +109,7 @@ func (this Game) Draw(screen *ebiten.Image) {
 
 	temp := this.curr
 	for temp != nil {
-		temp.DrawPath(screen, color.RGBA{B: 255, G: 255})
+		temp.DrawPath(screen, color.RGBA{B: 255, R: 255})
 		temp = temp.Prev
 	}
 
