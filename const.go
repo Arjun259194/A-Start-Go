@@ -3,7 +3,7 @@ package main
 const (
 	WIDTH     int     = 1200
 	HEIGHT    int     = 600
-	FRAMRATE  int     = 30
+	FRAMRATE  int     = 120
 	SIZE      int     = 10
 	COLS      int     = WIDTH / SIZE
 	ROWS      int     = HEIGHT / SIZE

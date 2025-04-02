@@ -62,6 +62,13 @@ func (this Spot) DrawPath(screen *ebiten.Image, clr color.Color) {
 	vector.StrokeLine(screen, x0, y0, x1, y1, strokeWidth, clr, false)
 }
 
+
+// MIGHT IMPLEMENT IN FUTURE
+// function heuristic(node) =
+//     dx = abs(node.x - goal.x)
+//     dy = abs(node.y - goal.y)
+//     return D * (dx + dy) + (D2 - 2 * D) * min(dx, dy)
+
 func (this Spot) Heuristic(spot Spot) float32 {
 	x1, y1 := this.index.GetFloat32()
 	x2, y2 := spot.index.GetFloat32()

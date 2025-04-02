@@ -21,6 +21,15 @@ type Game struct {
 	curr      *game.Spot
 }
 
+func (this *Game) reset() {
+	this.start.Prev = nil
+	this.end.Prev = nil
+	this.closedSet = ds.NewIdxMap[*game.Spot]()
+	this.openSet = ds.NewIdxMap[*game.Spot]()
+	this.openSet.Add(this.start)
+	this.pause = false
+}
+
 func (this *Game) Update() error {
 	if ebiten.IsKeyPressed(ebiten.KeyEnter) {
 		this.pause = false
@@ -30,13 +39,26 @@ func (this *Game) Update() error {
 	if ebiten.IsMouseButtonPressed(ebiten.MouseButtonLeft) {
 		x, y := ebiten.CursorPosition()
 		i, j := (x / SIZE), (y / SIZE)
+
 		newEnd := this.grid.GetSpotByIndex(i, j)
 		newEnd.Wall = false
+
+		this.reset()
 		this.end = newEnd
-		this.closedSet = ds.NewIdxMap[*game.Spot]()
-		this.openSet = ds.NewIdxMap[*game.Spot]()
-		this.openSet.Add(this.start)
-    this.pause = false
+
+		return nil
+	}
+
+	if ebiten.IsMouseButtonPressed(ebiten.MouseButtonRight) {
+		x, y := ebiten.CursorPosition()
+		i, j := (x / SIZE), (y / SIZE)
+
+		newStart := this.grid.GetSpotByIndex(i, j)
+		newStart.Wall = false
+
+		this.start = newStart
+		this.reset()
+
 		return nil
 	}
 
@@ -106,6 +128,7 @@ func (this Game) Draw(screen *ebiten.Image) {
 	this.grid.Render(screen)
 
 	this.end.Draw(screen, color.RGBA{R: 255})
+	this.start.Draw(screen, color.RGBA{G: 255})
 
 	temp := this.curr
 	for temp != nil {
