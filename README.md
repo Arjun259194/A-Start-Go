@@ -40,7 +40,9 @@ The A* algorithm uses a combination of the following:
 - **H-cost**: Estimated distance to the target (heuristic).
 - **F-cost**: Sum of G and H, guiding the best path.
 
-The algorithm efficiently finds the shortest route by prioritizing nodes with the lowest F-cost.
+The algorithm efficiently finds the shortest route by prioritizing nodes with the lowest F-cost. For how to interact [click](/Use.md)
 
-## 📸 Preview (Coming Soon)
-[Insert GIF or screenshot here]
+## 📸 Preview 
+![preview 1](assets/preview1.png)
+![preview 1](assets/preview2.png)
+![GIF](assets/previewAStar.gif)
